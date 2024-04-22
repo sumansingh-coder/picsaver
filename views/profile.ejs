@@ -1,0 +1,116 @@
+<% include ./partials/header.ejs %>
+    <div class="profile w-full min-h-screen bg-zinc-800 text-white relative"> <!-- Added relative positioning -->
+        <form id="uploadform" hidden action="/fileupload" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" />
+        </form>
+        <div class="profdets flex flex-col items-center py-20">
+            <div class="relative">
+                <div class="w-32 h-32 rounded-full bg-red-500 overflow-hidden">
+                    <img class="w-full h-full object-cover" src="/images/uploads/<%=user.profileImg%>"
+                        alt="profile-pic">
+                </div>
+                <span id="uploadIcon"
+                    class="w-8 h-8 bottom-0 right-0 rounded-full absolute bg-white flex items-center justify-center text-xl">
+                    <i class="ri-pencil-line text-black"></i>
+                </span>
+            </div>
+            <h1 class="text-3xl font-semibold">
+                <%=user.username%>
+            </h1>
+            <h3 class="text-md">
+                <%=user.email%>
+            </h3>
+            <a class="bg-red-500 hidden px-7 py-2 rounded-full text-xs font-semibold" href="/edit">Edit</a>
+            <a href="/addpost" class="bg-red-500 px-7 py-2 rounded-full text-xs font-semibold my-4"> Add New Post</a>
+            <h5 class="text-md pl-5">Total Posts:
+                <%= user.posts.length %>
+            </h5>
+        </div>
+        <div class="cards px-10 flex flex-wrap gap-10">
+            <% user.posts.forEach(function(elem){ %>
+                <div class="card">
+                    <div class="w-52 h-40 bg-red-500 rounded-lg overflow-hidden">
+                        <a href="#" class="image-link" data-image="/images/uploads/<%= elem?.image %>"
+                            data-title="<%= elem?.title %>" data-description="<%= elem?.description %>">
+                            <img class="w-full h-full object-cover" src="/images/uploads/<%= elem?.image %>" alt="">
+                        </a>
+                    </div>
+                    <a href="#" class="text-xl font-semibold mt-3 pl-5">
+                        <%= elem?.title %>
+                    </a>
+                </div>
+                <% }) %>
+        </div>
+
+        <div id="myModal"
+            class="modal w-[70vw] h-[70vh] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-zinc-900 ">
+            <!-- Changed modal size -->
+            <div class="modal-content">
+                <span class="close text-3xl absolute  top-0 right-0 mt-2 mr-2">&times;</span>
+                <div class="flex">
+                    <div class="w-3/4 bg-cover bg-center px-5 py-5">
+                        <img class="flex justify-center items-center self-center modal-image" id="modal-image" src=""
+                            alt="">
+                    </div>
+                    <div class="w-1/4 pt-[10%] py-10">
+                        <h2 id="modal-title" class="text-white font-bold text-3xl"></h2>
+                        <p id="modal-description" class="text-white font-semibold text-3xl"></p>
+                        <p class="text-white font-sm absolute bottom-0 right-0 opacity-40">Note : Sometimes IMAGE SIZE
+                            can be too
+                            big
+                            in that
+                            case
+                            right click and open in a new tab to
+                            view. If you want to save an image right click and choose save as and save in your computer.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector("#uploadIcon").addEventListener("click", function () {
+            document.querySelector("#uploadform input").click();
+        });
+        document.querySelector("#uploadform input").addEventListener("change", function () {
+            document.querySelector("#uploadform").submit();
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var modal = document.getElementById("myModal");
+            var images = document.querySelectorAll(".image-link");
+
+            images.forEach(function (image) {
+                image.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    var imageUrl = this.getAttribute("data-image");
+                    var title = this.getAttribute("data-title");
+                    var description = this.getAttribute("data-description");
+                    showModal(imageUrl, title, description);
+                });
+            });
+
+            var close = document.querySelector(".close");
+            close.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+
+            function showModal(imageUrl, title, description) {
+                var modalImage = document.getElementById("modal-image");
+                var modalTitle = document.getElementById("modal-title");
+                var modalDescription = document.getElementById("modal-description");
+
+                // Resize the image
+                modalImage.style.maxWidth = "100%";
+                modalImage.style.maxHeight = "100%";
+
+                modalImage.src = imageUrl;
+                modalTitle.textContent = `Title : ` + title;
+                modalDescription.textContent = description;
+                modal.style.display = "block";
+            }
+        });
+    </script>
+    <% include ./partials/footer.ejs %>

@@ -1,0 +1,19 @@
+<% include ./partials/header.ejs%>
+    <div class="w-full min-h-screen bg-zinc-800 text-white relative">
+        <div class="cards px-10 flex flex-wrap gap-10">
+            <% posts.forEach(function(elem){ %>
+                <div class="card">
+                    <div class="w-52 h-40 bg-red-500 rounded-lg overflow-hidden">
+                        <a href="#" class="image-link" data-image="/images/uploads/<%= elem?.image %>"
+                            data-title="<%= elem?.title %>" data-description="<%= elem?.description %>">
+                            <img class="w-full h-full object-cover" src="/images/uploads/<%= elem?.image %>" alt="">
+                        </a>
+                    </div>
+                    <a href="#" class="text-xl font-semibold mt-3 pl-5">
+                        <%= elem?.title %>
+                    </a>
+                </div>
+                <% }) %>
+        </div>
+    </div>
+    <% include ./partials/footer.ejs%>
